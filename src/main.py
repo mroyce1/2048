@@ -65,7 +65,7 @@ while(True):
             grid.check_click(*pos)
     agent_choice = ag.get_move(grid)
     print("score: ", grid.score)
-    res = grid.move_cells(range(4)[agent_choice])
+    # res = grid.move_cells(range(4)[agent_choice])
     grid.draw(screen, myfont)
     pygame.display.update()
     if(not res):

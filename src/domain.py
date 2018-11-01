@@ -14,12 +14,9 @@ class Grid(object):
         self.score = 0
         self.free_tiles = 16
         self.moves_performed = 0
-        for i in range(4):
-            self.cells.append([])
-            for j in range(4):
-                self.cells[i].append(
-                    Cell(0, [i, j], self.x_d, self.y_d, margin))
-        for i in range(4):
+        self.cells = [[Cell(0, [i, j], self.x_d, self.y_d, margin)
+                       for j in range(4)] for i in range(4)]
+        for _ in range(4):
             self.spawn_random_cell()
 
     def spawn_random_cell(self):
@@ -31,6 +28,7 @@ class Grid(object):
         self.cells[y][x].val = 4 if (random.randint(0, 9) == 0) else 2
         self.cells[y][x].set_col()
         self.free_tiles -= 1
+
 
     def __str__(self):
         out = ''
@@ -78,7 +76,7 @@ class Grid(object):
         return max([i.val for x in self.cells for i in x])
 
     def check_click(self, x, y):
-        for c in [i.val for x in self.cells for i in x]:
+        for c in [i for x in self.cells for i in x]:
             if(c.click_is_inside(x, y)):
                 print(c)
                 return
@@ -194,9 +192,7 @@ class Cell(object):
                     (0, 202, 155), (67, 207, 23), (247, 192, 1), (245, 129, 20), (255, 84, 61), (255, 20, 145), (255, 20, 59), (255, 20, 59)][k]
 
     def click_is_inside(self, x, y):
-        if(x < self.coords[0]):
-            return False
-        if(y < self.coords[1]):
+        if(x < self.coords[0] or y < self.coords[1]):
             return False
         return x < self.coords[0]+self.coords[2] and y < self.coords[1] + self.coords[3]
 
