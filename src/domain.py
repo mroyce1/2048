@@ -109,8 +109,7 @@ class Grid(object):
 
 class Cell(object):
     def __init__(self, val, pos, x_d, y_d, margin):
-        self.val = val
-        self.set_col()
+        self.update_val(val)
         self.pos = pos
         self.coords = [(x_d+margin)*self.pos[1],
                        (y_d+margin)*self.pos[0], x_d, y_d]
