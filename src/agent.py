@@ -12,7 +12,7 @@ class SimpleAgent(object):
         d = {}
         for i in range(4):
             state_copy = deepcopy(state)
-            state_copy.move_cells(["RIGHT", "LEFT", "UP", "DOWN"][i])
+            state_copy.move_cells(range(4)[i])
             if(state_copy.moves_performed == state.moves_performed):
                 continue
             d[i] = self.descend(state_copy, 0)
@@ -27,7 +27,7 @@ class SimpleAgent(object):
             return state.free_tiles/depth
         for i in range(4):
             state_copy = deepcopy(state)
-            state_copy.move_cells(["RIGHT", "LEFT", "UP", "DOWN"][i])
+            state_copy.move_cells(range(4)[i])
             if(state.moves_performed == state_copy.moves_performed):
                 continue
             val += self.descend(state_copy, depth+1)

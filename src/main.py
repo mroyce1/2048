@@ -46,13 +46,13 @@ while(True):
     for e in events:
         if (e.type == pygame.KEYDOWN):
             if (e.key == pygame.K_LEFT):
-                grid.move_cells("LEFT")
+                grid.move_cells(3)
             if (e.key == pygame.K_RIGHT):
-                grid.move_cells("RIGHT")
+                grid.move_cells(1)
             if (e.key == pygame.K_UP):
-                grid.move_cells("UP")
+                grid.move_cells(0)
             if (e.key == pygame.K_DOWN):
-                grid.move_cells("DOWN")
+                grid.move_cells(2)
             if (e.key == pygame.K_q):
                 print("Exiting...")
                 sys.exit(0)
@@ -65,7 +65,7 @@ while(True):
             grid.check_click(*pos)
     agent_choice = ag.get_move(grid)
     print("score: ", grid.score)
-    res = grid.move_cells(["RIGHT", "LEFT", "UP", "DOWN"][agent_choice])
+    res = grid.move_cells(range(4)[agent_choice])
     grid.draw(screen, myfont)
     pygame.display.update()
     if(not res):

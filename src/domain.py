@@ -4,7 +4,6 @@ import random
 from copy import deepcopy
 
 
-
 class Grid(object):
     def __init__(self, screen_size, margin):
         self.margin = margin
@@ -26,11 +25,11 @@ class Grid(object):
     def spawn_random_cell(self):
         x = random.randint(0, 3)
         y = random.randint(0, 3)
-        while(self.cells[x][y].val != 0):
+        while(self.cells[y][x].val != 0):
             x = random.randint(0, 3)
             y = random.randint(0, 3)
-        self.cells[x][y].val = 4 if (random.randint(0, 9) == 0) else 2
-        self.cells[x][y].set_col()
+        self.cells[y][x].val = 4 if (random.randint(0, 9) == 0) else 2
+        self.cells[y][x].set_col()
         self.free_tiles -= 1
 
     def __str__(self):
@@ -42,26 +41,25 @@ class Grid(object):
         return out
 
     def draw(self, screen, font):
-        for x in self.cells:
-            for y in x:
-                y.draw(screen, font)
+        for c in [i for x in self.cells for i in x]:
+            c.draw(screen, font)
 
     def move_cells(self, direction):
         moved = 0
         for _ in range(4):
-            if(direction == 'UP'):
+            if(direction == 0):
                 for x in range(4):
                     moved += self.cells[0][x].move_up(
                         self.cells, self.increment_score)
-            if(direction == 'DOWN'):
+            if(direction == 2):
                 for x in range(4):
                     moved += self.cells[3][x].move_down(
                         self.cells, self.increment_score)
-            if(direction == 'LEFT'):
+            if(direction == 3):
                 for x in range(4):
                     moved += self.cells[x][0].move_left(
                         self.cells, self.increment_score)
-            if(direction == 'RIGHT'):
+            if(direction == 1):
                 for x in range(4):
                     moved += self.cells[x][3].move_right(
                         self.cells, self.increment_score)
@@ -70,7 +68,6 @@ class Grid(object):
         if moved > 0:
             self.spawn_random_cell()
             self.moves_performed += 1
-        # print("free tiles: ", self.free_tiles)
         return self.move_possible()
 
     def increment_score(self, n):
@@ -81,11 +78,10 @@ class Grid(object):
         return max([i.val for x in self.cells for i in x])
 
     def check_click(self, x, y):
-        for row in self.cells:
-            for c in row:
-                if(c.click_is_inside(x, y)):
-                    print(c)
-                    return
+        for c in [i.val for x in self.cells for i in x]:
+            if(c.click_is_inside(x, y)):
+                print(c)
+                return
 
     def reset_merged(self):
         for c in [i for x in self.cells for i in x]:
@@ -114,26 +110,24 @@ class Cell(object):
         self.coords = [(x_d+margin)*self.pos[1],
                        (y_d+margin)*self.pos[0], x_d, y_d]
         self.box = pygame.Rect(self.coords)
-        self.merged = False
 
-    def update_val(self, n):
+    def update_val(self, n, m=False):
         self.val = n
         self.set_col()
+        self.merged = m
 
     def move_up(self, cells, score):
         moved = 0
         if(self.pos[0] > 0):
             tmp = cells[self.pos[0]-1][self.pos[1]]
             if(tmp.val == 0 and self.val != 0):
-                tmp.update_val(self.val)
-                self.update_val(0)
+                tmp.update_val(self.val, False)
+                self.update_val(0, False)
                 moved += 1
             elif(tmp.val == self.val and self.val != 0 and not tmp.merged and not self.merged):
-                tmp.update_val(tmp.val + self.val)
-                self.update_val(0)
+                tmp.update_val(tmp.val + self.val, True)
+                self.update_val(0, True)
                 score(tmp.val)
-                self.merged = True
-                tmp.merged = True
                 moved += 1
         if(self.pos[0] < 3):
             moved += cells[self.pos[0]+1][self.pos[1]].move_up(cells, score)
@@ -144,14 +138,12 @@ class Cell(object):
         if(self.pos[0] < 3):
             tmp = cells[self.pos[0]+1][self.pos[1]]
             if(tmp.val == 0 and self.val != 0):
-                tmp.update_val(self.val)
-                self.update_val(0)
+                tmp.update_val(self.val, False)
+                self.update_val(0, False)
                 moved += 1
             elif(tmp.val == self.val and self.val != 0 and not tmp.merged and not self.merged):
-                tmp.update_val(tmp.val + self.val)
-                self.update_val(0)
-                self.merged = True
-                tmp.merged = True
+                tmp.update_val(tmp.val + self.val, True)
+                self.update_val(0, True)
                 score(tmp.val)
                 moved += 1
         if(self.pos[0] > 0):
@@ -163,14 +155,12 @@ class Cell(object):
         if(self.pos[1] > 0):
             tmp = cells[self.pos[0]][self.pos[1]-1]
             if(tmp.val == 0 and self.val != 0):
-                tmp.update_val(self.val)
-                self.update_val(0)
+                tmp.update_val(self.val, False)
+                self.update_val(0, False)
                 moved += 1
             elif(tmp.val == self.val and self.val != 0 and not tmp.merged and not self.merged):
-                tmp.update_val(tmp.val + self.val)
-                self.update_val(0)
-                self.merged = True
-                tmp.merged = True
+                tmp.update_val(tmp.val + self.val, True)
+                self.update_val(0, True)
                 score(tmp.val)
                 moved += 1
         if(self.pos[1] < 3):
@@ -182,14 +172,12 @@ class Cell(object):
         if(self.pos[1] < 3):
             tmp = cells[self.pos[0]][self.pos[1]+1]
             if(tmp.val == 0 and self.val != 0):
-                tmp.update_val(self.val)
-                self.update_val(0)
+                tmp.update_val(self.val, False)
+                self.update_val(0, False)
                 moved += 1
             elif(tmp.val == self.val and self.val != 0 and not tmp.merged and not self.merged):
-                tmp.update_val(tmp.val + self.val)
-                self.update_val(0)
-                self.merged = True
-                tmp.merged = True
+                tmp.update_val(tmp.val + self.val, True)
+                self.update_val(0, True)
                 score(tmp.val)
                 moved += 1
         if(self.pos[1] > 0):
@@ -213,7 +201,7 @@ class Cell(object):
         return x < self.coords[0]+self.coords[2] and y < self.coords[1] + self.coords[3]
 
     def __str__(self):
-        return ''.join([str(self.pos), ': ', str(self.val)])
+        return f'{self.pos}: {self.val}'
 
     def draw(self, screen, font):
         pygame.draw.rect(screen, self.col, self.box)
