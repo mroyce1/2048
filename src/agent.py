@@ -7,7 +7,6 @@ class SimpleAgent(object):
     def __init__(self, name):
         self.name = name
         self.prev_state = None
-        pass
 
     def get_move(self, state):
         d = {}
