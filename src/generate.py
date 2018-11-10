@@ -19,10 +19,9 @@ def move_left(vec):
 
     new_vec = [i for i in vec if i != 0]
     new_vec += [0 for i in range(len(vec) - len(new_vec))]
-    vec = new_vec
-    if(vec == prev):
+    if(new_vec == prev):
         return None
-    return (np.array(vec), score)
+    return (np.array(new_vec), score)
 
 
 
@@ -45,11 +44,9 @@ def move_right(vec):
 
     new_vec = [i for i in vec if i != 0]
     new_vec = [0 for i in range(len(vec) - len(new_vec))] + new_vec
-    vec = new_vec
-    
-    if(vec == prev):
+    if(new_vec == prev):
         return None
-    return (np.array(vec), score)
+    return (np.array(new_vec), score)
 
 
 def gen_moves():
@@ -58,7 +55,6 @@ def gen_moves():
     for i in range(1, 14):
         seq.append(2 ** i)
         
-    # seq = [0, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192]
     for i in range(13):
         for j in range(13):
             for k in range(13):
