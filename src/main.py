@@ -7,7 +7,7 @@ import sys
 
 pygame.init()
 pygame.font.init()
-myfont = pygame.font.SysFont('Arial', 30)
+myfont = pygame.font.SysFont('Arial',  30, bold=True,)
 screen_size = [500, 500]
 margin = 2
 grid = Grid(screen_size, margin)

@@ -35,12 +35,12 @@ class Grid(object):
         return state_copy, state_copy.score, self.move_possible(), {}
 
     def spawn_random_cell(self):
-        x = random.randint(0, 3)
-        y = random.randint(0, 3)
-        while(self.cells[y][x] != 0):
-            x = random.randint(0, 3)
-            y = random.randint(0, 3)
-        self.cells[y][x] = 4 if (random.randint(0, 9) == 0) else 2
+        zeros = np.where(self.cells == 0)
+        assert len(zeros[0] > 0), 'No empty tiles to spawn a cell.'
+
+        rdm = random.randint(0, len(zeros[0])-1)
+        self.cells[zeros[0][rdm]][zeros[1][rdm]] = 4 if (
+            random.randint(0, 9) == 0) else 2
         self.free_tiles -= 1
 
     def __str__(self):
@@ -56,10 +56,13 @@ class Grid(object):
             for j in range(len(self.cells)):
                 pygame.draw.rect(
                     screen, Grid.colors[self.cells[i, j]], Grid.boxes[i, j])
+                col = (0, 0, 0)
+                val = self.cells[i, j]
+                # if val > 4:
+                #     col = (255, 255, 255)
                 text_surface = font.render(
-                    str(int(self.cells[i, j])), False, (0, 0, 0))
+                    str(int(val)), False, col)
                 screen.blit(text_surface, Grid.coords[i, j])
-
 
     def move_cells(self, direction):
         moved = False
