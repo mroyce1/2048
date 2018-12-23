@@ -2,9 +2,11 @@ import numpy as np
 import pygame
 
 
+margin = 2
+screen_size = 500
+
 def move_left(vec):
     score = 0
-    changed = False
     prev = vec
 
     new_vec = [i for i in vec if i != 0]
@@ -13,7 +15,6 @@ def move_left(vec):
 
     for i in range(0, 3):
         if(vec[i] == vec[i+1]):
-            changed = True
             vec[i] += vec[i]
             score += vec[i]
             vec[i+1] = 0
@@ -29,15 +30,12 @@ def move_right(vec):
     prev = vec
     score = 0
 
-    changed = False
-
     new_vec = [i for i in vec if i != 0]
     new_vec = [0 for i in range(len(vec) - len(new_vec))] + new_vec
     vec = new_vec
 
     for i in range(3, 0, -1):
         if(vec[i] == vec[i-1]):
-            changed = True
             vec[i] += vec[i]
             score += vec[i]
             vec[i-1] = 0
@@ -83,8 +81,7 @@ def gen_colors():
 def gen_coords():
     c = {}
     b = {}
-    margin = 2
-    x_d = (500-margin)/4
+    x_d = (screen_size-margin)/4
     for i in range(4):
         for j in range(4):
             c[i, j] = [(x_d+margin)*i,

@@ -2,8 +2,7 @@ from copy import deepcopy
 import numpy as np
 import random
 
-
-class SimpleAgent(object):
+class ExpectimaxAgent(object):
     def __init__(self, name):
         self.name = name
         self.prev_state = None
